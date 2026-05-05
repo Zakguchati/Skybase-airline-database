@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Flights{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Flight Schedule</h1>
+  <p>All scheduled Diamond Group flights with live occupancy data</p>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h2>All Flights ({{ rows|length }})</h2>
+  </div>
+  <table class="data-table">
+    <thead>
+      <tr><th>Flight</th><th>Departure</th><th>Arrival</th><th>Dep. Time</th>
+          <th>Arr. Time</th><th>Aircraft</th><th>Base Price</th><th>Bookings</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      <tr>
+        <td><strong>{{ r.flight_number }}</strong></td>
+        <td>{{ r.departure }}</td>
+        <td>{{ r.arrival }}</td>
+        <td>{{ r.departure_time.strftime('%d %b %Y %H:%M') if r.departure_time else '—' }}</td>
+        <td>{{ r.arrival_time.strftime('%d %b %Y %H:%M')   if r.arrival_time   else '—' }}</td>
+        <td>{{ r.aircraft }}</td>
+        <td>£{{ "%.2f"|format(r.base_price) }}</td>
+        <td><span class="badge">{{ r.bookings }}</span></td>
+        <td><span class="status status-{{ r.status|lower }}">{{ r.status }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

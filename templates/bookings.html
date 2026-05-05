@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Bookings{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Booking Management</h1>
+  <p>Create and manage passenger bookings with integrated payment recording</p>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h2>All Bookings ({{ rows|length }})</h2>
+    <a href="{{ url_for('booking_add') }}" class="btn btn-primary">➕ New Booking</a>
+  </div>
+  <table class="data-table">
+    <thead>
+      <tr><th>ID</th><th>Passenger</th><th>Flight</th><th>Route</th>
+          <th>Class</th><th>Status</th><th>Amount</th><th>Payment</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      <tr>
+        <td><span class="badge">#{{ r.booking_id }}</span></td>
+        <td>{{ r.passenger }}</td>
+        <td><strong>{{ r.flight_number }}</strong></td>
+        <td>{{ r.route }}</td>
+        <td><span class="tag tag-{{ r.seat_class|lower }}">{{ r.seat_class }}</span></td>
+        <td><span class="status status-{{ r.status|lower }}">{{ r.status }}</span></td>
+        <td>{% if r.amount %}£{{ "%.2f"|format(r.amount) }}{% else %}—{% endif %}</td>
+        <td>
+          {% if r.payment_status %}
+          <span class="status status-{{ r.payment_status|lower }}">{{ r.payment_status }}</span>
+          {% else %}—{% endif %}
+        </td>
+        <td>
+          <a href="{{ url_for('booking_delete', bid=r.booking_id) }}"
+             class="btn-del"
+             onclick="return confirm('Cancel booking #{{ r.booking_id }}?')">🗑️ Cancel</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

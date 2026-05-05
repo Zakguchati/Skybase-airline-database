@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if row else 'Add' }} Passenger{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>{{ 'Edit Passenger' if row else 'Add New Passenger' }}</h1>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h2>{{ 'Edit Passenger #' + row.passenger_id|string if row else 'New Passenger' }}</h2>
+    <a href="{{ url_for('passengers') }}" class="btn btn-sm">← Back to List</a>
+  </div>
+  <div style="padding:24px">
+    <form method="POST">
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name *</label>
+          <input type="text" name="first_name" required value="{{ row.first_name if row else '' }}">
+        </div>
+        <div class="form-group">
+          <label>Last Name *</label>
+          <input type="text" name="last_name" required value="{{ row.last_name if row else '' }}">
+        </div>
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" name="email" required value="{{ row.email if row else '' }}">
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" name="phone" value="{{ row.phone if row else '' }}">
+        </div>
+        <div class="form-group">
+          <label>Date of Birth *</label>
+          <input type="date" name="date_of_birth" required
+                 value="{{ row.date_of_birth|string if row else '' }}">
+        </div>
+        <div class="form-group">
+          <label>Passport Number *</label>
+          <input type="text" name="passport_number" required
+                 value="{{ row.passport_number if row else '' }}">
+        </div>
+        <div class="form-group">
+          <label>Nationality *</label>
+          <input type="text" name="nationality" required
+                 value="{{ row.nationality if row else '' }}">
+        </div>
+        <div class="form-group">
+          <label>Gender</label>
+          <select name="gender">
+            <option value="">-- Select --</option>
+            {% for g in ['Male','Female','Non-binary','Prefer not to say'] %}
+            <option value="{{ g }}" {{ 'selected' if row and row.gender == g else '' }}>{{ g }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">
+        {{ '💾 Save Changes' if row else '➕ Add Passenger' }}
+      </button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

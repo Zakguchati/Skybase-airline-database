@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Passengers{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Passenger Management</h1>
+  <p>Create, read, update and delete passenger records</p>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h2>All Passengers ({{ rows|length }})</h2>
+    <a href="{{ url_for('passenger_add') }}" class="btn btn-primary">➕ Add Passenger</a>
+  </div>
+  <div class="filter-bar">
+    <form method="GET" style="display:flex;gap:8px;flex:1">
+      <input type="text" name="search" placeholder="Search by name, email or passport…"
+             value="{{ search }}" style="flex:1">
+      <button type="submit" class="btn btn-primary">Search</button>
+      {% if search %}<a href="{{ url_for('passengers') }}" class="btn">Clear</a>{% endif %}
+    </form>
+  </div>
+  <table class="data-table">
+    <thead>
+      <tr><th>ID</th><th>Name</th><th>Email</th><th>Passport</th>
+          <th>Nationality</th><th>Date of Birth</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% if not rows %}
+      <tr><td colspan="7" style="text-align:center;color:#999;padding:32px">No passengers found.</td></tr>
+      {% endif %}
+      {% for r in rows %}
+      <tr>
+        <td><span class="badge">#{{ r.passenger_id }}</span></td>
+        <td><strong>{{ r.first_name }} {{ r.last_name }}</strong></td>
+        <td>{{ r.email }}</td>
+        <td>{{ r.passport_number }}</td>
+        <td>{{ r.nationality }}</td>
+        <td>{{ r.date_of_birth }}</td>
+        <td>
+          <a href="{{ url_for('passenger_edit', pid=r.passenger_id) }}" class="btn-edit">✏️ Edit</a>
+          <a href="{{ url_for('passenger_delete', pid=r.passenger_id) }}"
+             class="btn-del"
+             onclick="return confirm('Delete this passenger? Cannot be undone.')">🗑️ Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

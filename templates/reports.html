@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Operational Reports</h1>
+  <p>Live SQL-powered analytics for Diamond Group — all queries join 2+ tables</p>
+</div>
+
+<!-- Revenue by Route -->
+<div class="card">
+  <div class="card-header"><h2>📊 Revenue by Route</h2></div>
+  <table class="data-table">
+    <thead><tr><th>Route</th><th>Confirmed Bookings</th><th>Total Revenue (£)</th><th>Revenue Bar</th></tr></thead>
+    <tbody>
+      {% for r in revenue %}
+      {% set pct = ((r.total_revenue|float / max_rev) * 100)|round|int %}
+      <tr>
+        <td><strong>{{ r.route }}</strong></td>
+        <td>{{ r.bookings }}</td>
+        <td>£{{ "%.2f"|format(r.total_revenue) }}</td>
+        <td>
+          <div style="background:#e3f2fd;border-radius:4px;height:14px;width:100%">
+            <div style="background:#0077b6;height:14px;border-radius:4px;width:{{ pct }}%"></div>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Occupancy -->
+<div class="card">
+  <div class="card-header"><h2>✈ Flight Occupancy Rates</h2></div>
+  <table class="data-table">
+    <thead><tr><th>Flight</th><th>Route</th><th>Capacity</th><th>Booked</th><th>Occupancy %</th></tr></thead>
+    <tbody>
+      {% for r in occupancy %}
+      <tr>
+        <td><strong>{{ r.flight_number }}</strong></td>
+        <td>{{ r.route }}</td>
+        <td>{{ r.total_seats }}</td>
+        <td>{{ r.booked }}</td>
+        <td>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="background:#e3f2fd;border-radius:4px;height:14px;width:80px">
+              <div style="background:{{ '#2e7d32' if (r.pct or 0) > 80 else '#0077b6' }};height:14px;border-radius:4px;width:{{ r.pct or 0 }}%"></div>
+            </div>
+            <span>{{ r.pct or 0 }}%</span>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Crew -->
+<div class="card">
+  <div class="card-header"><h2>👨‍✈️ Crew Flight Assignments</h2></div>
+  <table class="data-table">
+    <thead><tr><th>Crew Member</th><th>Role</th><th>Flights Assigned</th></tr></thead>
+    <tbody>
+      {% for r in crew_load %}
+      <tr>
+        <td><strong>{{ r.crew_member }}</strong></td>
+        <td>{{ r.role }}</td>
+        <td><span class="badge">{{ r.total_flights }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Payments -->
+<div class="card">
+  <div class="card-header"><h2>💳 Payment Method Analysis</h2></div>
+  <table class="data-table">
+    <thead><tr><th>Payment Method</th><th>Transactions</th><th>Total Revenue (£)</th><th>Avg Amount (£)</th></tr></thead>
+    <tbody>
+      {% for r in payments %}
+      <tr>
+        <td><strong>{{ r.payment_method }}</strong></td>
+        <td>{{ r.transactions }}</td>
+        <td>£{{ "%.2f"|format(r.total) }}</td>
+        <td>£{{ "%.2f"|format(r.avg_amount) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
